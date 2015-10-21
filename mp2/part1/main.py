@@ -16,6 +16,29 @@ _solution_array = list()
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
 
 '''
+	Does backtracking search on the puzzle using a letter assignment
+'''
+def letter_search():
+	pass
+
+'''
+	Does backtracking search on the puzzle using a word assignment
+'''
+def word_search():
+	pass
+
+'''
+	@Parameter : assignment_type = specify which assignment to use for searching
+	
+	Performs a backtracking search on the puzzle
+'''
+def backtracking_search(assignment_type):
+	if assignment_type == 'word':
+		word_search()
+	else:
+		letter_search()
+
+'''
 	@Returns:	True if solution assignment
 				False otherwise
 
