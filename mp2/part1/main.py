@@ -16,17 +16,17 @@ _solution_array = list()
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
 
 '''
-	@Returns:	True if consistent assignment
+	@Returns:	True if solution assignment
 				False otherwise
 
-	Checks for a consistent assignment to variables.
+	Checks for a solution assignment to variables.
 		Goes through the necessary categories and checks
 		if the word made up of the characters at the 
 		related position belongs to that category.
 		If it does not, returns false.
 		Otherwise it tries the rest of the words.
 '''
-def is_consistent():
+def is_solution():
 	consistent = True
 	for category_n in _slots:
 		positions = _slots[category_n]
@@ -44,7 +44,7 @@ def is_consistent():
 	Proof of concept for consistency checking, should not be used to actually solve puzzle
 '''
 def brute():
-	while(not is_consistent()):
+	while(not is_solution()):
 		print(_solution_array)
 		if _solution_array[3] == 'Z':
 			return
