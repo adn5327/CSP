@@ -90,7 +90,7 @@ def get_word_list(category):
 		file. Avoids keeping all words from all categories 
 		when they aren't necessary.
 '''
-def process_puzzle(filename):
+def process_puzzle(filename, version):
 	if(filename == None):
 		raise Exception("No puzzle file provided")
 	puzzle_file = open(filename, "r")
@@ -120,11 +120,12 @@ def process_puzzle(filename):
 	puzzle_file.close()
 
 def main():
-	if(len(argv) == 1):
-		print("Usage: main.py <puzzles/puzzle(#).txt>")
+	if(len(argv) != 3):
+		print("Usage: main.py <puzzles/puzzle(#).txt> [word] [letter]")
 		return
 	puzzle_name = argv[1]
-	process_puzzle(puzzle_name)
+	version = argv[2]
+	process_puzzle(puzzle_name, version)
 
 
 if __name__ == "__main__":
