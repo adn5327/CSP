@@ -13,7 +13,7 @@ _solution_template = list()
 _category_ids = defaultdict()
 _solution_array = list()
 
-__author__ = 'Jakub Klapacz <jklapac2@illinois.edu>'
+__author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
 
 '''
 	@Returns:	True if consistent assignment
