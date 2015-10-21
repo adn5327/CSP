@@ -15,6 +15,8 @@ _solution_array = list()
 
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu>'
 
+
+
 '''
 	@Returns:	True if solution assignment
 				False otherwise
