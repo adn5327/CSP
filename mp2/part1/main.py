@@ -33,6 +33,7 @@ def word_search():
 	Performs a backtracking search on the puzzle
 '''
 def backtracking_search(assignment_type):
+	print(assignment_type)
 	if assignment_type == 'word':
 		word_search()
 	else:
@@ -113,7 +114,7 @@ def get_word_list(category):
 		file. Avoids keeping all words from all categories 
 		when they aren't necessary.
 '''
-def process_puzzle(filename, version):
+def process_puzzle(filename):
 	if(filename == None):
 		raise Exception("No puzzle file provided")
 	puzzle_file = open(filename, "r")
@@ -148,8 +149,8 @@ def main():
 		return
 	puzzle_name = argv[1]
 	version = argv[2]
-	process_puzzle(puzzle_name, version)
-
+	process_puzzle(puzzle_name)
+	backtracking_search(version)
 
 if __name__ == "__main__":
 	main()
