@@ -121,7 +121,7 @@ def process_puzzle(filename):
 
 def main():
 	if(len(argv) == 1):
-		print("Usage: main.py <puzzle(#).txt>")
+		print("Usage: main.py <puzzles/puzzle(#).txt>")
 		return
 	puzzle_name = argv[1]
 	process_puzzle(puzzle_name)
