@@ -36,6 +36,7 @@ def setup():
 	# coordinates are therefore y,x -- 0 indexed
 	matrix = [map(int, x) for x in string_matrix]
 
+	board_file.close()
 	# for line in board_file:
 	# 	print line.split('\t')
 
