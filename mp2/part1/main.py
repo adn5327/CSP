@@ -15,9 +15,27 @@ _solution_array = list()
 
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
 
+
 def is_consistent():
 	pass
 
+# to check if it's consistent for the letter based implementation
+# when looking at a bucket -- look at every category 
+# see if that category has the index of your bucket
+# if it does, check whether its the first/second/third index of the category's word (_slots var)
+# check whether the assingment including that bucket is valid
+# XXX, X__, X_X, __X, XX_, etc
+# if at the end you havent returned false, return true
+
+# for the word based implementation
+# put a word in place, and then check if their are still possibilities for other words
+# do that by analyzing each bucket that you've modified(?!)
+# and see if there are still possible words that can be placed in them
+
+# in the other case -- you could look at every category that has not been assigned yet (or only the ones your current category affects!)
+# for each of those categories, look at every word and see if it could fit. 
+# if you come across a category for which no word fits, then you return false!
+# if at the end you haven't returned false, then return true
 
 
 '''
