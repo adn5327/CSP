@@ -15,6 +15,11 @@ _solution_array = list()
 
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
 
+def is_consistent():
+	pass
+
+
+
 '''
 	Does backtracking search on the puzzle using a letter assignment
 '''
@@ -33,7 +38,9 @@ def word_search():
 	Performs a backtracking search on the puzzle
 '''
 def backtracking_search(assignment_type):
+	# print(_solution_template)
 	print(assignment_type)
+	assignment_type = "test"
 	if assignment_type == 'word':
 		word_search()
 	else:
@@ -83,7 +90,6 @@ def brute():
 
 
 	print(_solution_array)
-
 
 
 
@@ -151,6 +157,7 @@ def main():
 	version = argv[2]
 	process_puzzle(puzzle_name)
 	backtracking_search(version)
+	print(version)
 
 if __name__ == "__main__":
 	main()
