@@ -21,8 +21,60 @@ _category_ids = defaultdict()
 
 _solution_array = list()
 
+# List of lists that will hold valid domain values (for the puzzle's index)
+_domain = list()
+
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
 
+
+'''
+	@Parameter	:	category_id = integer representing category_id
+				:	index = integer representing the letter at position index
+	@Returns 	: 	list of letters in every index'th position in all words of a category
+'''
+def get_letter_list(category_id, index):
+	word_list = _categories[_category_ids[category_id]]
+	letter_list = list()
+	for word in word_list:
+		letter_list.append(word[index])
+	return letter_list
+
+'''
+	@Parameter	:	category_id = integer representing category_id
+				: 	index = index in solution array
+	@returns 	: 	position 
+	Given a category id (int) and the index in the solution array
+	This function returns which position in the category is 
+	associated with that index.
+'''
+def cat_index_to_pos(category_id, index):
+	cat = _slots[_category_ids[category_id]]
+	for i in range(3):
+		if cat[i] == index:
+			return i
+	return -1
+
+def get_domain_values(index):
+	possible_lists = list()
+	for category_id in _solution_template[index]:
+		letter_index = cat_index_to_pos(category_id, index)
+		possible_lists.append(get_letter_list(category_id, letter_index))
+	actual_list = set(possible_lists[0]).intersection(*possible_lists)
+	actual_list = list(actual_list)
+	actual_list.sort()
+	return actual_list
+
+'''
+	Function to generate the domain for every 
+'''
+def create_domain():
+	for i in range(len(_solution_array)):
+		_domain.append(get_domain_values(i))
+	print(len(_solution_array))
+	print()
+	print(_domain)
+	print()
+	print(_solution_template)
 
 def is_consistent():
 	pass
@@ -46,12 +98,13 @@ def is_consistent():
 # if at the end you haven't returned false, then return true
 
 
+
 '''
 	Does backtracking search on the puzzle using a letter assignment
 '''
-def letter_search():
-
-	pass
+def letter_search():	
+	create_domain()
+	
 # After generating a list of potential letters for a bucket:
 # 1. Start at first bucket
 # 2. Pop a letter of the list of possible values for that bucket
@@ -112,20 +165,26 @@ def is_solution():
 	Proof of concept for consistency checking, should not be used to actually solve puzzle
 '''
 def brute():
-	while(not is_solution()):
-		print(_solution_array)
-		if _solution_array[3] == 'Z':
-			return
-		if _solution_array[2] == 'Z':
-			_solution_array[3] = chr(ord(_solution_array[3])+ 1)
-			_solution_array[2] = 'A'
-		if _solution_array[1] == 'Z':
-			_solution_array[2] = chr(ord(_solution_array[2])+ 1)
-			_solution_array[1] = 'A'
+	# while(not is_solution()):
+	# 	print(_solution_array)
+	# 	if _solution_array[3] == 'Z':
+	# 		return
+	# 	if _solution_array[4] == 'Z':
+	# 		_solution_array[3] = chr(ord(_solution_array[3])+ 1)
+	# 		_solution_array[4] = 'A'
+	# 	if _solution_array[3] == 'Z':
+	# 		_solution_array[2] = chr(ord(_solution_array[3])+ 1)
+	# 		_solution_array[3] = 'A'		
+	# 	if _solution_array[2] == 'Z':
+	# 		_solution_array[3] = chr(ord(_solution_array[3])+ 1)
+	# 		_solution_array[2] = 'A'
+	# 	if _solution_array[1] == 'Z':
+	# 		_solution_array[2] = chr(ord(_solution_array[2])+ 1)
+	# 		_solution_array[1] = 'A'
 
-		_solution_array[1] = chr(ord(_solution_array[1])+ 1)
-
-
+	# 	_solution_array[1] = chr(ord(_solution_array[1])+ 1)
+	
+	print(is_solution())
 	print(_solution_array)
 
 
@@ -162,10 +221,11 @@ def process_puzzle(filename):
 		raise Exception("No puzzle file provided")
 	puzzle_file = open(filename, "r")
 	line = puzzle_file.readline()
+	global _n_array_size
 	_n_array_size = int(line)
-	for i in range(_n_array_size + 1):
+	for i in range(_n_array_size):
 		_solution_template.append([])
-		_solution_array.append('A')
+		_solution_array.append('0')
 	_solution_array[0] = 0
 	lines = puzzle_file.readlines()
 	category_id = 0
@@ -177,16 +237,12 @@ def process_puzzle(filename):
 		_categories[category] = list()
 		_category_ids[category_id] = category
 		for index in spots:
-			_solution_template[int(index)].append(category_id)
+			_solution_template[int(index) - 1].append(category_id)
 		_slots[category] = list(map(int, spots))
+		_slots[category][:] = [x - 1 for x in _slots[category]]
 		category_id += 1
-
 	for category in _categories:
 		get_word_list(category)
-
-	# print(_slots)
-	# print(_categories)
-	# print(_solution_template)
 	puzzle_file.close()
 
 def main():
@@ -197,7 +253,7 @@ def main():
 	version = argv[2]
 	process_puzzle(puzzle_name)
 	backtracking_search(version)
-	print(version)
+	
 
 if __name__ == "__main__":
 	main()
