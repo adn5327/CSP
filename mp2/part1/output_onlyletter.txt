@@ -11,6 +11,8 @@ Puzzle 2 - Letter
 (Found result: HSIOIWNDS)
 (Found result: HSIOIWNYS)
 Puzzle 3 - Word
+(Found result: ASULPEA)
+(Found result: ASULPIE)
 Puzzle 3 - Letter
 (Found result: ASULPEA)
 (Found result: ASULPIE)

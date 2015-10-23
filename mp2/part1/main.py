@@ -22,12 +22,20 @@ _solution_template = list()
 #merely maps integer id of category to the actual string ()
 _category_ids = defaultdict()
 
+#at the end of infrastructure generation, this will hold the number of categories (1 indexed)
+_num_categories = 0
+
 _solution_array = list()
 
 # List of lists that will hold valid domain values (for the puzzle's index)
 _domain = list()
 
+_solution_map = list()
+
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
+
+
+
 
 
 '''
@@ -88,6 +96,25 @@ def create_domain():
 def is_consistent():
 	pass
 
+def is_consistent_word(category, word, check_against):
+	idx_list = _slots[category]
+	# print(category)
+	# stdout.write(''.join(check_against))
+	for i in range(len(idx_list)):
+		idx_val = check_against[idx_list[i]]
+		if(idx_val != '0' and idx_val != word[i]): 
+			# quit()
+			# print(False)
+			# stdout.write('\n') 
+			return False
+
+
+	# print(True)
+
+	# stdout.write('\n') 
+
+	return True
+
 # to check if it's consistent for the letter based implementation
 # when looking at a bucket -- look at every category 
 # see if that category has the index of your bucket
@@ -117,14 +144,7 @@ def letter_search():
 
 def letter_search_helper(index):
 	if(index == len(_domain)):
-		if(is_solution()):
-			stdout.write("(Found result: ")
-			stdout.write(''.join(_solution_array)) 
-			stdout.write(')\n')
-			# print(_solution_array)
-			return True
-		if(_trace): stdout.write("Backtracking\n")
-		return False
+		choose_print()
 
 	if(index >= len(_domain)): return False
 
@@ -152,7 +172,48 @@ def letter_search_helper(index):
 	Does backtracking search on the puzzle using a word assignment
 '''
 def word_search():
-	pass
+	word_search_helper(0, _solution_array)
+
+def word_search_helper(category_int, passed_array):
+	local_array = list(passed_array)
+	if(category_int == _num_categories):
+		# if(at_full_assignment()):
+		global _solution_array
+		_solution_array = list(local_array)
+		choose_print()
+		# return
+	if(category_int >= _num_categories): return	
+
+	cur_category = _category_ids[category_int]
+	checker_array = list(local_array)
+	# if(at_full_assignment()):
+		# print(checker_array)
+	for each_word in _categories[cur_category]:
+		if(is_consistent_word(cur_category, each_word, checker_array)):
+			# print(each_word)
+			assign_word(cur_category, each_word, local_array)
+			# print(' '.join(_solution_array))
+			# stdout.write('\n')
+			word_search_helper(category_int+1, local_array)
+
+	return
+
+
+def assign_word(cur_category, each_word, passed_array):
+	idx_list = _slots[cur_category]
+	for i in range(len(idx_list)):
+		passed_array[idx_list[i]] = each_word[i]
+
+
+
+
+
+
+def at_full_assignment():
+	for x in _solution_array:
+		if(x == '0'): 
+			return False
+	return True
 
 '''
 	@Parameter : assignment_type = specify which assignment to use for searching
@@ -191,6 +252,20 @@ def is_solution():
 	consistent = True
 	return consistent
 
+
+def choose_print():
+	if(is_solution()):
+		print_solution()
+		_solution_map.append(_solution_array)
+		# print(_solution_array)
+		return True
+	if(_trace): stdout.write("Backtracking\n")
+	return False
+
+def print_solution():
+	stdout.write("(Found result: ")
+	stdout.write(''.join(_solution_array)) 
+	stdout.write(')\n')
 
 '''
 	Proof of concept for consistency checking, should not be used to actually solve puzzle
@@ -257,21 +332,22 @@ def process_puzzle(filename):
 	for i in range(_n_array_size):
 		_solution_template.append([])
 		_solution_array.append('0')
-	_solution_array[0] = 0
 	lines = puzzle_file.readlines()
-	category_id = 0
+	global _num_categories
 	for line in lines:
 		line = line.rstrip()
 		line = line.replace(" ", "")
 		category, spots = line.split(":", 1)
 		spots = spots.split(",")
 		_categories[category] = list()
-		_category_ids[category_id] = category
+		_category_ids[_num_categories] = category
 		for index in spots:
-			_solution_template[int(index) - 1].append(category_id)
+			_solution_template[int(index) - 1].append(_num_categories)
 		_slots[category] = list(map(int, spots))
 		_slots[category][:] = [x - 1 for x in _slots[category]]
-		category_id += 1
+		_num_categories += 1
+
+
 	for category in _categories:
 		get_word_list(category)
 	puzzle_file.close()
