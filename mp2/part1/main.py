@@ -76,9 +76,7 @@ def word_search():
 	Performs a backtracking search on the puzzle
 '''
 def backtracking_search(assignment_type):
-	# print(_solution_template)
-	print(assignment_type)
-	assignment_type = "test"
+
 	if assignment_type == 'word':
 		word_search()
 	else:
