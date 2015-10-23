@@ -54,6 +54,12 @@ def cat_index_to_pos(category_id, index):
 			return i
 	return -1
 
+'''
+	@Parameter	:	index = integer that corresponds to the index in the solution array
+	@Return 	: 	actual_list = list of domain values for the given index
+	Function that returns a list of domain values that are valid for every category
+	associated with the index. 
+'''
 def get_domain_values(index):
 	possible_lists = list()
 	for category_id in _solution_template[index]:
@@ -65,7 +71,7 @@ def get_domain_values(index):
 	return actual_list
 
 '''
-	Function to generate the domain for every 
+	Function to generate the domain for every solution index (letter based)
 '''
 def create_domain():
 	for i in range(len(_solution_array)):
