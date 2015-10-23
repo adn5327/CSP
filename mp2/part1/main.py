@@ -42,6 +42,7 @@ def is_consistent():
 	Does backtracking search on the puzzle using a letter assignment
 '''
 def letter_search():
+
 	pass
 
 '''
