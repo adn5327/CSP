@@ -1,8 +1,11 @@
 from sys import argv
 from collections import defaultdict
 from array import array
+from sys import stdout
 _word_directory = "words/wordlist/"
 
+#Print out the search trace if true, if false just print solution(s) (if found)
+_trace = False
 # This global variable holds the size of the array
 _n_array_size = 0
 # Using a dictionary to store lists of words for every category
@@ -76,11 +79,11 @@ def get_domain_values(index):
 def create_domain():
 	for i in range(len(_solution_array)):
 		_domain.append(get_domain_values(i))
-	print(len(_solution_array))
-	print()
-	print(_domain)
-	print()
-	print(_solution_template)
+	# print(len(_solution_array))
+	# print()
+	# print(_domain)
+	# print()
+	# print(_solution_template)
 
 def is_consistent():
 	pass
@@ -110,6 +113,27 @@ def is_consistent():
 '''
 def letter_search():	
 	create_domain()
+	letter_search_helper(0)
+
+def letter_search_helper(index):
+	if(index == len(_domain)):
+		if(is_solution()):
+			stdout.write("(Found result: ")
+			stdout.write(''.join(_solution_array)) 
+			stdout.write(')\n')
+			# print(_solution_array)
+			return True
+		if(_trace): stdout.write("Backtracking\n")
+		return False
+
+	if(index >= len(_domain)): return False
+
+	for each_letter in _domain[index]:
+		_solution_array[index] = each_letter
+		letter_search_helper(index+1)
+
+	return True
+
 	
 # After generating a list of potential letters for a bucket:
 # 1. Start at first bucket
@@ -141,6 +165,7 @@ def backtracking_search(assignment_type):
 		word_search()
 	else:
 		letter_search()
+		# print(_domain)
 
 '''
 	@Returns:	True if solution assignment
@@ -252,11 +277,14 @@ def process_puzzle(filename):
 	puzzle_file.close()
 
 def main():
-	if(len(argv) != 3):
-		print("Usage: main.py <puzzles/puzzle(#).txt> [word] [letter]")
+	if(len(argv) != 4):
+		print("Usage: main.py <puzzles/puzzle(#).txt> {[word], [letter]} {[trace], [notrace]}")
 		return
 	puzzle_name = argv[1]
 	version = argv[2]
+	if(argv[3] == "trace"):
+		global _trace
+		_trace = True
 	process_puzzle(puzzle_name)
 	backtracking_search(version)
 	

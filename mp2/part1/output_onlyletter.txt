@@ -1,0 +1,27 @@
+Puzzle 1 - Word
+Puzzle 1 - Letter
+(Found result: NNEMANDYE)
+(Found result: NNESAYDYE)
+(Found result: NWEMANDYE)
+(Found result: NWESAYDYE)
+Puzzle 2 - Word
+Puzzle 2 - Letter
+(Found result: HSIAIWNCS)
+(Found result: HSIAIWNPS)
+(Found result: HSIOIWNDS)
+(Found result: HSIOIWNYS)
+Puzzle 3 - Word
+Puzzle 3 - Letter
+(Found result: ASULPEA)
+(Found result: ASULPIE)
+Puzzle 4 - Word
+Puzzle 4 - Letter
+(Found result: HEDITYRE)
+(Found result: HELITYRE)
+(Found result: HETITYRE)
+Puzzle 5 - Word
+Puzzle 5 - Letter
+(Found result: IHTTNOIEN)
+(Found result: IHTTYOIEN)
+(Found result: THTTNOIEN)
+(Found result: THTTYOIEN)
