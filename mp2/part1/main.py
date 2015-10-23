@@ -6,11 +6,19 @@ _word_directory = "words/wordlist/"
 # This global variable holds the size of the array
 _n_array_size = 0
 # Using a dictionary to store lists of words for every category
+# string (category) --> list of words for that category
 _categories = defaultdict(list)
-# Maps a category to the list of spaces in the dictionary
+
+# maps a string (category) --> list of three integers - the SLOTS
 _slots = defaultdict(list)
+
+
+# values from category id
 _solution_template = list()
+
+#merely maps integer id of category to the actual string ()
 _category_ids = defaultdict()
+
 _solution_array = list()
 
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
@@ -43,7 +51,19 @@ def is_consistent():
 '''
 def letter_search():
 	pass
-
+# After generating a list of potential letters for a bucket:
+# 1. Start at first bucket
+# 2. Pop a letter of the list of possible values for that bucket
+# 3. Check if assigning that letter to that bucket is possible
+# 		Do so using the is consistent method
+# 4. If it is consistent:
+# 		Assign that letter
+# 		Call recursive backtracking on the next bucket
+# 5. If it is not consistent
+#		return -- that way you try a different value for that current bucket
+# If you have a found a solution (AKA all buckets are filled & isconsistent)
+# 		print solution
+# 		return -- that way you try a different value for that current bucket
 '''
 	Does backtracking search on the puzzle using a word assignment
 '''
@@ -156,7 +176,7 @@ def process_puzzle(filename):
 		category, spots = line.split(":", 1)
 		spots = spots.split(",")
 		_categories[category] = list()
-		_category_ids[category] = category_id
+		_category_ids[category_id] = category
 		for index in spots:
 			_solution_template[int(index)].append(category_id)
 		_slots[category] = list(map(int, spots))
@@ -165,6 +185,9 @@ def process_puzzle(filename):
 	for category in _categories:
 		get_word_list(category)
 
+	# print(_slots)
+	# print(_categories)
+	# print(_solution_template)
 	puzzle_file.close()
 
 def main():
