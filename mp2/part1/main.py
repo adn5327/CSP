@@ -15,7 +15,7 @@ _categories = defaultdict(list)
 # maps a string (category) --> list of three integers - the SLOTS
 _slots = defaultdict(list)
 
-
+_search_iterations = 0
 # values from category id
 _solution_template = list()
 
@@ -93,8 +93,36 @@ def create_domain():
 	# print()
 	# print(_solution_template)
 
-def is_consistent():
-	pass
+'''
+	@Parameters	:	category_id = integer representing category to search in
+					letter = letter that needs to be in a category's word's index position
+					index = position in word that letter must appear
+	@returns 	:	word_list = a list of words that have letter appearing at index 
+'''
+def pos_get_word_list(category_id, letter, index):
+	all_words = _categories[_category_ids[category_id]]
+	word_list = list()
+	for word in all_words:
+		if(word[index] == letter):
+			word_list.append(word)
+	return word_list
+
+
+def is_consistent_letter(letter, index, check_against):
+	categories_list = _solution_template[index]
+	
+	for category_id in categories_list:
+		letter_pos = _slots[_category_ids[category_id]].index(index)
+		word_list = pos_get_word_list(category_id, letter, letter_pos)
+		if (word_list == []):
+			return False
+		correct_word = ""
+		for i in range(letter_pos):
+			correct_word += check_against[_slots[_category_ids[category_id]][i]]
+			if(any(correct_word in string for string in word_list) == False):
+				return False
+
+	return True
 
 def is_consistent_word(category, word, check_against):
 	idx_list = _slots[category]
@@ -140,17 +168,29 @@ def is_consistent_word(category, word, check_against):
 '''
 def letter_search():	
 	create_domain()
-	letter_search_helper(0)
+	if(_trace):
+		stdout.write("root")
+	letter_search_helper(0, _solution_array, 0)
+	print("Search Iterations: " + str(_search_iterations))
 
-def letter_search_helper(index):
+def letter_search_helper(index, passed_array, depth):
+	global _search_iterations
+	_search_iterations += 1
+	local_array = list(passed_array)
 	if(index == len(_domain)):
+		global _solution_array
+		_solution_array = list(local_array)
 		choose_print()
 
 	if(index >= len(_domain)): return False
-
+	checker_array = list(local_array)
 	for each_letter in _domain[index]:
-		_solution_array[index] = each_letter
-		letter_search_helper(index+1)
+		if(is_consistent_letter(each_letter, index, checker_array)):
+			local_array[index] = each_letter
+			if(_trace):
+				stdout.write("[" + str(depth) + "]")
+				stdout.write("->" + each_letter)
+			letter_search_helper(index+1, local_array, depth+1)
 
 	return True
 
@@ -172,18 +212,23 @@ def letter_search_helper(index):
 	Does backtracking search on the puzzle using a word assignment
 '''
 def word_search():
-	word_search_helper(0, _solution_array)
+	if(_trace):
+		stdout.write("root")
+	word_search_helper(0, _solution_array, 0)
+	print("Search Iterations: " + str(_search_iterations))
 
-def word_search_helper(category_int, passed_array):
+
+def word_search_helper(category_int, passed_array, depth):
+	global _search_iterations
+	_search_iterations += 1
 	local_array = list(passed_array)
 	if(category_int == _num_categories):
 		# if(at_full_assignment()):
 		global _solution_array
 		_solution_array = list(local_array)
-		choose_print()
+		return choose_print()
 		# return
-	if(category_int >= _num_categories): return	
-
+	if(category_int >= _num_categories): return	False
 	cur_category = _category_ids[category_int]
 	checker_array = list(local_array)
 	# if(at_full_assignment()):
@@ -192,11 +237,20 @@ def word_search_helper(category_int, passed_array):
 		if(is_consistent_word(cur_category, each_word, checker_array)):
 			# print(each_word)
 			assign_word(cur_category, each_word, local_array)
+			# for i in range(depth + 1):
+				# stdout.write("")
+				# stdout.write("(" + str(i) +")")
+			if(_trace):
+				stdout.write("[" + str(depth) + "]")
+				stdout.write("->" + each_word)
 			# print(' '.join(_solution_array))
 			# stdout.write('\n')
-			word_search_helper(category_int+1, local_array)
+			solution = word_search_helper(category_int+1, local_array, depth+1)
+			if(_trace and solution == False):
+				stdout.write("(Backtracking)\n")
 
-	return
+	# stdout.write("\t(Backtracking)\n")
+	return False
 
 
 def assign_word(cur_category, each_word, passed_array):
@@ -259,7 +313,9 @@ def choose_print():
 		_solution_map.append(_solution_array)
 		# print(_solution_array)
 		return True
-	if(_trace): stdout.write("Backtracking\n")
+	# if(_trace): stdout.write("Backtracking\n")
+	if(_trace): 
+		stdout.write("(Backtracking)\n")
 	return False
 
 def print_solution():
