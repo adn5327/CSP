@@ -1,0 +1,54 @@
+Puzzle 1 - Word
+(Found result: NNEMANDYE)
+(Found result: NWEMANDYE)
+(Found result: NNESAYDYE)
+(Found result: NWESAYDYE)
+Search Iterations: 79
+Puzzle 1 - Letter
+(Found result: NNEMANDYE)
+(Found result: NNESAYDYE)
+(Found result: NWEMANDYE)
+(Found result: NWESAYDYE)
+Search Iterations: 1993916
+Puzzle 2 - Word
+(Found result: HSIAIWNCS)
+(Found result: HSIAIWNPS)
+(Found result: HSIOIWNDS)
+(Found result: HSIOIWNYS)
+Search Iterations: 39
+Puzzle 2 - Letter
+(Found result: HSIAIWNCS)
+(Found result: HSIAIWNPS)
+(Found result: HSIOIWNDS)
+(Found result: HSIOIWNYS)
+Search Iterations: 81639369
+Puzzle 3 - Word
+(Found result: ASULPEA)
+(Found result: ASULPIE)
+Search Iterations: 50
+Puzzle 3 - Letter
+(Found result: ASULPEA)
+(Found result: ASULPIE)
+Search Iterations: 7768957
+Puzzle 4 - Word
+(Found result: HEDITYRE)
+(Found result: HELITYRE)
+(Found result: HETITYRE)
+Search Iterations: 30
+Puzzle 4 - Letter
+(Found result: HEDITYRE)
+(Found result: HELITYRE)
+(Found result: HETITYRE)
+Search Iterations: 4912501
+Puzzle 5 - Word
+(Found result: IHTTNOIEN)
+(Found result: THTTNOIEN)
+(Found result: IHTTYOIEN)
+(Found result: THTTYOIEN)
+Search Iterations: 20
+Puzzle 5 - Letter
+(Found result: IHTTNOIEN)
+(Found result: IHTTYOIEN)
+(Found result: THTTNOIEN)
+(Found result: THTTYOIEN)
+Search Iterations: 232585

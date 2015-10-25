@@ -107,10 +107,16 @@ def pos_get_word_list(category_id, letter, index):
 			word_list.append(word)
 	return word_list
 
-
+'''
+	@Parameters	:	letter = letter assignment we want to make
+					index = position in the solution array we want to check
+					check_against = local copy of current solution array state
+	@Returns 	:	True if assignment would be consistent, false otherwise
+	This function determines whether choosing a letter assignment in a particular
+		location in the solution function would be consistent/inconsistent
+'''
 def is_consistent_letter(letter, index, check_against):
 	categories_list = _solution_template[index]
-	
 	for category_id in categories_list:
 		letter_pos = _slots[_category_ids[category_id]].index(index)
 		word_list = pos_get_word_list(category_id, letter, letter_pos)
@@ -124,6 +130,12 @@ def is_consistent_letter(letter, index, check_against):
 
 	return True
 
+'''
+	@Parameters :	category = string, represents category we want to check
+					word = potential word assignment we want to make
+					check_against = local copy of solution array
+	@Returns 	:	True if consistent assignment, false otherwise
+'''
 def is_consistent_word(category, word, check_against):
 	idx_list = _slots[category]
 	# print(category)
@@ -168,11 +180,19 @@ def is_consistent_word(category, word, check_against):
 '''
 def letter_search():	
 	create_domain()
+	print("\nSearching in order of indicies in the solution array [0] ... [{}]".format(str(_n_array_size - 1)))
 	if(_trace):
 		stdout.write("root")
 	letter_search_helper(0, _solution_array, 0)
-	print("Search Iterations: " + str(_search_iterations))
+	print("Search Iterations: " + str(_search_iterations) + "\n")
 
+'''
+	@Parameters 	:	index = index of solution array to work on (starts at 0)
+						passed_array = local copy of solution
+						depth = depth of recursion, which variable is being worked on
+	@Returns 		: 	True if solution is found, otherwise returns false
+	This function is a helper function for letter-based search.
+'''
 def letter_search_helper(index, passed_array, depth):
 	global _search_iterations
 	_search_iterations += 1
@@ -180,7 +200,7 @@ def letter_search_helper(index, passed_array, depth):
 	if(index == len(_domain)):
 		global _solution_array
 		_solution_array = list(local_array)
-		choose_print()
+		return choose_print()
 
 	if(index >= len(_domain)): return False
 	checker_array = list(local_array)
@@ -190,9 +210,10 @@ def letter_search_helper(index, passed_array, depth):
 			if(_trace):
 				stdout.write("[" + str(depth) + "]")
 				stdout.write("->" + each_letter)
-			letter_search_helper(index+1, local_array, depth+1)
-
-	return True
+			solution = letter_search_helper(index+1, local_array, depth+1)
+			if(_trace and solution == False):
+				stdout.write("(Backtracking)\n")
+	return False
 
 	
 # After generating a list of potential letters for a bucket:
@@ -212,12 +233,22 @@ def letter_search_helper(index, passed_array, depth):
 	Does backtracking search on the puzzle using a word assignment
 '''
 def word_search():
+	stdout.write("\nSearching in order of categories: ")
+	for i in range(_num_categories):
+		stdout.write(_category_ids[i] + " ")
+	stdout.write("\n")
 	if(_trace):
 		stdout.write("root")
 	word_search_helper(0, _solution_array, 0)
-	print("Search Iterations: " + str(_search_iterations))
+	print("Search Iterations: " + str(_search_iterations) + "\n")
 
-
+'''
+	@Parameters 	:	category_int = integer of category we want to assign to (start with 0)
+						passed_array = state of the solution array we want to operate on
+						depth = depth of recursion, basically which category are we working on 
+	@Returns 		: 	True if the assignment is a solution, false otherwise
+	This is a helper function that searches for solution(s) to the puzzle using word assignments
+'''
 def word_search_helper(category_int, passed_array, depth):
 	global _search_iterations
 	_search_iterations += 1
@@ -252,17 +283,20 @@ def word_search_helper(category_int, passed_array, depth):
 	# stdout.write("\t(Backtracking)\n")
 	return False
 
-
+'''
+	@Parameters 	:	cur_category = string, current category to be assigning to
+						each_word = word that we want to assign into the solution array
+						passed_array = local copy of solution array 
+	This Function puts a category's word into the proper slots in the solution array
+'''
 def assign_word(cur_category, each_word, passed_array):
 	idx_list = _slots[cur_category]
 	for i in range(len(idx_list)):
 		passed_array[idx_list[i]] = each_word[i]
 
-
-
-
-
-
+'''
+	@Returns :	False if any index in the solution array has not been assigned, true otherwise
+'''
 def at_full_assignment():
 	for x in _solution_array:
 		if(x == '0'): 
@@ -306,7 +340,10 @@ def is_solution():
 	consistent = True
 	return consistent
 
-
+'''
+	@returns 	: 	True if assignment is solution, false otherwise
+	Helper function, calls solution checker and outputs some text.
+'''
 def choose_print():
 	if(is_solution()):
 		print_solution()
@@ -318,6 +355,9 @@ def choose_print():
 		stdout.write("(Backtracking)\n")
 	return False
 
+'''
+	Helper function to correctly format a found solution
+'''
 def print_solution():
 	stdout.write("(Found result: ")
 	stdout.write(''.join(_solution_array)) 
@@ -408,6 +448,9 @@ def process_puzzle(filename):
 		get_word_list(category)
 	puzzle_file.close()
 
+'''
+	Main function, creates a puzzle based on .txt input and solves it
+'''
 def main():
 	if(len(argv) != 4):
 		print("Usage: main.py <puzzles/puzzle(#).txt> {[word], [letter]} {[trace], [notrace]}")
