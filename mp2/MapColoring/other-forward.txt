@@ -1,0 +1,26 @@
+Node 0 is red
+Node 1 is yellow
+Node 2 is red
+Node 3 is red
+Node 4 is yellow
+Node 5 is yellow
+Node 6 is red
+Node 7 is red
+Node 8 is yellow
+Node 9 is yellow
+Node 10 is red
+Node 11 is green
+
+
+map[0] = new int[] {1, 4, 5};
+map[1] = new int[] {0, 3};
+map[2] = new int[] {};
+map[3] = new int[] {1};
+map[4] = new int[] {0};
+map[5] = new int[] {0,6,11};
+map[6] = new int[] {5};
+map[7] = new int[] {8,9,11};
+map[8] = new int[] {7}; 
+map[9] = new int[] {7,10};
+map[10] = new int[] {9};
+map[11] = new int[] {5,7};

@@ -1,0 +1,24 @@
+Node 0 (WA) is red
+Node 1 (NT) is yellow
+Node 2 (SA) is green
+Node 3 (Q) is red
+Node 4 (NSW) is yellow
+Node 5 (V) is red
+Node 6 (T) is red
+
+
+int WA  = 0;
+int NT  = 1;
+int SA  = 2;
+int Q   = 3;
+int NSW = 4;
+int V   = 5;
+int T   = 6;
+
+map[T] 		= new int[] {};
+map[WA] 	= new int[] {NT, SA};
+map[NT] 	= new int[] {WA, Q, SA};
+map[SA] 	= new int[] {WA, NT, Q, NSW, V};
+map[Q] 		= new int[]  {NT, SA, NSW   };
+map[NSW] 	= new int[] {Q, SA, V};
+map[V]  	= new int[] {SA, NSW};
