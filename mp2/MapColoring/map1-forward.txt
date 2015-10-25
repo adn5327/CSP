@@ -1,0 +1,16 @@
+Node 0 is red
+Node 1 is yellow
+Node 2 is yellow
+Node 3 is red
+Node 4 is green
+Node 5 is green
+Node 6 is blue
+
+
+map[0] = new int[] { 1, 4, 2, 5 };
+map[1] = new int[] { 0, 4, 6, 5 }; 
+map[2] = new int[] { 0, 4, 3, 6, 5 }; 
+map[3] = new int[] { 2, 4, 6 }; 
+map[4] = new int[] { 0, 1, 6, 3, 2 }; 
+map[5] = new int[] { 2, 6, 1, 0 }; 
+map[6] = new int[] { 2, 3, 4, 1, 5 };
