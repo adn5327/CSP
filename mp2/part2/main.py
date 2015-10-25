@@ -5,6 +5,8 @@ from array import array
 string_matrix = list()
 matrix = list()
 
+board_edge = 0
+
 player1 = "green"
 player2 = "blue"
 player1type = "alphabeta"
@@ -14,9 +16,11 @@ __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2
 
 #this should set up a game board and initialize the players
 #this empties the lists if they are already full
-def setup():
+def setup(filename):
 	#sets up our six by six board
 	# matrix = [[0 for x in range(6)] for x in range(6)]
+	global string_matrix
+	global matrix
 	string_matrix[:] = []
 	matrix[:] = []
 
@@ -35,6 +39,13 @@ def setup():
 	# each row is a list
 	# coordinates are therefore y,x -- 0 indexed
 	matrix = [map(int, x) for x in string_matrix]
+
+	board_edge = len(matrix)
+	for listy in matrix:
+		print(listy)
+
+	print()
+	print(board_edge)
 
 	board_file.close()
 	# for line in board_file:
