@@ -3,6 +3,7 @@ from collections import defaultdict
 from array import array
 from Queue import PriorityQueue
 from sys import maxint
+import copy
 
 depth_minimax = 3
 depth_alphabeta = 4
@@ -85,8 +86,20 @@ class Board_space(object):
 		return self.x == x and self.y == y
 
 def apply_action(board, action):
-	if(board.turn == 1): board.turn =2
-	else: board.turn = 1
+	player = None
+	if(board.turn == 1): 
+		board.turn = 2
+		player = board.player1
+	else: 
+		board.turn = 1
+		player = board.player2
+	
+	i = board.free_list.index(action)
+	print(i)
+	print(board.free_list)
+	space = board.free_list.pop(i)
+	print(board.free_list)
+
 
 def out_of_bounds(space, board):
 	x = space[0]
@@ -379,6 +392,8 @@ def all_for_one_board(filename):
 def solveProblem(p1, p2, filename):
 	board = setup(p1, p2, filename)
 	solutionGenerator(board)
+
+
 
 def main():
 
