@@ -2,12 +2,20 @@ from sys import argv
 from collections import defaultdict
 from array import array
 from Queue import PriorityQueue
+from sys import maxint
 
-
-
+depth_minimax = 3
+depth_alphabeta = 4
 
 
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
+
+class ValAction(object):
+	def __init__(action , move_value):
+		self.action = action
+		self.move_value = move_value
+	def __str__(self):
+		return "Action: {} has Value: {}".format(self.action, self.move_value)
 
 class Board(object):
 	def __init__(self, player1, player2, scores_matrix, pos_matrix):
@@ -49,7 +57,15 @@ class Board_space(object):
 	def __lt__(self, other):
 		return self.value > other.value
 
+def get_all_actions(board):
+	pass
 
+def alpha_beta_search(board):
+	max_obj(board, -maxint -1, maxint)
+	return max_obj.action
+
+def max_obj(board, lower, upper):
+	pass
 
 #this should set up a game board and initialize the players
 #this empties the lists if they are already full
