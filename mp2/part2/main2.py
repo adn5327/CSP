@@ -1,12 +1,13 @@
 import time
 from sys import stdout
+from sys import argv
+
 currentBoard = None #will be a list initialized
 scores = None # will be a list initialized
 nodesExpanded = [0,0] #initialize this list to be zero for both players at start
 mode = [1,1] #1 for minimax, 2 for alphabeta
 total_time = [0,0]
 total_moves = [0,0]
-f = None
 max_depthab = 4
 max_depthmm = 3
 
@@ -50,13 +51,14 @@ class bcolors:
 	ENDC = '\033[0m'
 
 def main():
-	global f
-	# f = open('out.html', 'w')
 	stdout.write('<html>')
 	stdout.write(style)
 	all()
 	stdout.write('</html>')
-	# close()
+	if(len(argv) > 1):
+		ec()
+	all()
+
 	# global turn
 	# global mode
 	# turn = 1
@@ -64,10 +66,16 @@ def main():
 	# start('Keren')
 def all():
 	all_one('Keren')
-	# all_one('Narvik')
-	# all_one('Sevastopol')
-	# all_one('Smolensk')
-	# all_one('Westerplatte')
+	all_one('Narvik')
+	all_one('Sevastopol')
+	all_one('Smolensk')
+	all_one('Westerplatte')
+
+def ec():
+	all_one('KerenLarge')
+	all_one('NarvikLarge')
+	all_one('WesterplatteLarge')
+	all_one('Random')
 
 def all_one(boardy):
 	global turn
@@ -109,7 +117,7 @@ def start(boardy):
 	total_time[0] = 0
 	total_time[1] = 0
 
-	setBoard(boardy)
+	read_from_file(boardy)
 
 	turn = 2
 	curplayer = 'green'
@@ -368,29 +376,35 @@ def copy_board(board):
 
 	return new_list
 
-
-def setBoard(boardy):
+def read_from_file(board_name):
 	global scores
 	global currentBoard
 
-	if boardy == 'Keren':
-		scores = [ [1, 1,	1,	1,	1,	1],[1,	1,	1,	1,	1,	1],[1,	1,	1,	1,	1,	1],[1,	1,	1,	1,	1,	1],[1,	1,	1,	1,	1,	1],[1,	1,	1,	1,	1,	1]]
-		currentBoard = [ [-1, -1,-1,-1,	-1,	-1],[-1,-1,	-1,	-1,	-1,	-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1]]
-	elif boardy == 'Narvik':
-		scores = [[99,1,99,1,99,1],[1,99,1,99,1,99],[99,1,99,1,99,1],[1,99,1,99,1,99],[99,1,99,1,99,1],[1,99,1,99,1,99]]
-		currentBoard = [ [-1, -1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1]]
+	currentBoard = list()
+	currentBoard[:] = []
+	scores = list()
+	scores[:] = []
 
-	elif boardy == 'Sevastopol':
-		scores = [[1,1,1,1,1,1],[2,2,2,2,2,2],[4,4,4,4,4,4],[8,8,8,8,8,8],[16,16,16,16,16,16],[32,32,32,32,32,32]]
-		currentBoard = [ [-1, -1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,	-1]]
+	if(board_name == None):
+		raise Exception("No board provided!!!")
+	board_file = open('game_boards/' + board_name + '.txt', "r")
 
-	elif boardy == 'Smolensk':
-		scores = [[66,76,28,66,11,9],[31,39,50,8,33,14],[80,76,39,59,2,48],[50,73,43,3,13,3],[99,45,72,87,49,4],[80,63,92,28,61,53]]
-		currentBoard = [ [-1, -1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1]]
-
-	elif boardy == 'Westerplatte':
-		scores = [[1,1,1,1,1,1],[1,3,4,4,3,1],[1,4,2,2,4,1],[1,4,2,2,4,1],[1,3,4,4,3,1],[1,1,1,1,1,1]]
-		currentBoard = [ [-1, -1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1]]
+	#this puts every line into a matrix
+	string_matrix = list()
+	all_lines = board_file.read().splitlines()
+	for listy in all_lines:
+		string_matrix.append(listy.split())
+	
+	# matrix finally holds the game board 
+	# elements can be accessed with int_matrix[0][0]
+	# each row is a list
+	# coordinates are therefore y,x -- 0 indexed
+	
+	scores = [map(int, x) for x in string_matrix]
+	for i in range(len(scores)):
+		 currentBoard.append([])
+		 for j in range(len(scores[i])):
+		 	currentBoard[i].append(-1)
 
 
 if __name__ == '__main__':
