@@ -72,7 +72,7 @@ def start(boardy):
 	total_time[0] = 0
 	total_time[1] = 0
 
-	setBoard(boardy)
+	read_from_file(boardy)
 
 	turn = 2
 	curplayer = 'green'
@@ -322,6 +322,37 @@ def copy_board(board):
 			new_list[i].append(ijval)
 
 	return new_list
+
+def read_from_file(board_name):
+	global scores
+	global currentBoard
+
+	currentBoard = list()
+	currentBoard[:] = []
+	scores = list()
+	scores[:] = []
+
+	if(board_name == None):
+		raise Exception("No board provided!!!")
+	board_file = open('game_boards/' + board_name + '.txt', "r")
+
+	#this puts every line into a matrix
+	string_matrix = list()
+	all_lines = board_file.read().splitlines()
+	for listy in all_lines:
+		string_matrix.append(listy.split())
+	
+	# matrix finally holds the game board 
+	# elements can be accessed with int_matrix[0][0]
+	# each row is a list
+	# coordinates are therefore y,x -- 0 indexed
+	
+	scores = [map(int, x) for x in string_matrix]
+	for i in range(len(scores)):
+		 currentBoard.append([])
+		 for j in range(len(scores[i])):
+		 	currentBoard[i].append(-1)
+
 
 
 def setBoard(boardy):
