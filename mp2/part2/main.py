@@ -3,6 +3,7 @@ from collections import defaultdict
 from array import array
 from Queue import PriorityQueue
 from sys import maxint
+import copy
 
 depth_minimax = 3
 depth_alphabeta = 4
