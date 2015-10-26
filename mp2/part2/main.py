@@ -17,14 +17,6 @@ class Action(object):
 		self.value = value
 		# this would be value of the action
 
-
-class ValAction(object):
-	def __init__(self, action , move_value):
-		self.action = action
-		self.move_value = move_value
-	def __str__(self):
-		return "Action: {} has Value: {}".format(self.action, self.move_value)
-
 class Board(object):
 	def __init__(self, player1, player2, scores_matrix, pos_matrix, free_list):
 		self.player1 = player1
@@ -78,15 +70,141 @@ def apply_action(board, action):
 def get_all_actions(board):
 	pass
 
+def minimax(board):
+	potential_actions = get_all_actions(board)
+	if not potential_actions: 
+		# should this really return this???
+		return cur_utility(board)
+
+	max_action = potential_actions[0]
+
+	for each_action in potential_actions:
+		applier_board = copy.deepcopy(board)
+		apply_action(applier_board, each_action)
+		if minimax_min(applier_board, 0) > max_action.value:
+			max_action = each_action
+
+	return max_action
+	
+
+def minimax_max(board, depth):
+	if terminal_state_mm(board, depth): return cur_utility(board)
+	v = -maxint -1
+	potential_actions = get_all_actions(board)
+	for each_action in potential_actions:
+		applier_board = copy.deepcopy(board)
+		apply_action(applier_board, each_action)
+		v = max(v, minimax_min(applier_board, depth+1))
+	return v
+
+
+def minimax_min(board, depth):
+	if terminal_state_mm(board, depth): return cur_utility(board)
+	v = maxint
+	potential_actions = get_all_actions(board)
+	for each_action in potential_actions:
+		applier_board = copy.deepcopy(board)
+		apply_action(applier_board, each_action)
+		v = min(v, minimax_max(applier_board, depth+1))
+	return v
+
+
+
 def alpha_beta_search(board):
 	deep_copy_board = copy.deepcopy(board)
+
+	potential_val = max_value(deep_copy_board, -maxint -1, maxint, 0)
+
+	#search through get all actions and find action with val closest to potential_val
+	potential_actions = get_all_actions(board)
+	if not potential_actions:
+		#what should this actually return here???
+		return cur_utility(board)
+
+	# cloest_action = potential_actions[0]
+
+	for each_action in potential_actions:
+		if(each_action.value == potential_val):
+			return each_action
+
+	#should never reach this
+	return None
+
+def max_value(board, alpha, beta, depth):
+	if(terminal_state_ab(board,depth)): return cur_utility(board)
+	v = -maxint-1
+
+	potential_actions = get_all_actions(board)
+
+	for each_action in potential_actions:
+		applier_board = copy.deepcopy(board)
+		apply_action(applier_board, each_action)
+		v = max(v, min_value(applier_board, alpha, beta, depth+1))
+		if v >= beta: return v
+		alpha = max(alpha, v)
+
+	return v
+
+def min_value(board, alpha, beta, depth):
+	if(terminal_state_ab(board, depth)): return cur_utility(board)
 	
-	max_obj(deep_copy_board, -maxint -1, maxint)
+	v = maxint
+	potential_actions = get_all_actions(board)
 
-	return max_obj.action
+	for each_action in potential_actions:
+		applier_board = copy.deepcopy(board)
+		apply_action(applier_board, each_action)
+		v = min(v, max_value(applier_board, alpha, beta, depth+1))
+		if v <= alpha: return v
+		beta = min(beta, v)
 
-def max_obj(board, lower, upper):
+	return v
+
+
+	
+
+def cur_utility(board):
 	pass
+
+
+def terminal_state_mm(board, depth):
+	if(depth > depth_minimax): return True
+	potential_actions = get_all_actions(board)
+	if not potential_actions:
+		return True
+	return False
+
+def terminal_state_ab(board, depth):
+	if(depth > depth_alphabeta): return True
+	potential_actions = get_all_actions(board)
+	if not potential_actions:
+		return True
+	return False
+
+def take_action(board):
+	action = None
+	if(board.turn == 1):
+		if(board.player1.type == 'alphabeta'):
+			action = alpha_beta_search(board)
+		elif(board.player1.type == 'minimax'):
+			action = minimax(board)
+		else:
+			action = get_human_action(board)
+	else:
+		if(board.player2.type == 'alphabeta'):
+			action = alpha_beta_search(board)
+		elif(board.player2.type == 'minimax'):
+			action = minimax(board)
+		else:
+			action = get_human_action(board)
+
+	apply_action(board, action)
+
+def get_human_action():
+	print(board)
+	print('Usage: Ending X, Ending Y, Starting X, Starting Y')
+	# implement the rest here
+
 
 #this should set up a game board and initialize the players
 #this empties the lists if they are already full
@@ -132,7 +250,15 @@ def setup(p1, p2, filename):
 
 def solutionGenerator(board):
 	print(board)
+	play(board)
+	print(board)
 
+def play(board):
+	potential_actions = get_all_actions(board)
+	if not potential_actions: return
+	take_action(board)
+	play(board)
+	return
 
 
 def all():
