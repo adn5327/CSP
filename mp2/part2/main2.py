@@ -22,8 +22,7 @@ otherplayer = 'green'
 def main():
 	if(len(argv) > 1):
 		ec()
-	else:
-		all()
+	all()
 
 	# global turn
 	# global mode
