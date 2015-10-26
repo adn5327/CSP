@@ -11,12 +11,16 @@ depth_alphabeta = 4
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
 
 class Action(object):
-	def __init__(self, from_space, to_space, value):
-		self.from_space = from_space
+	def __init__(self, blitz, to_space, value):
+		self.blitz = blitz
 		self.to_space = to_space
 		self.value = value
 		# this would be value of the action
 
+	def __eq__(self, other):
+		x = other[0]
+		y = other[1]
+		return x == to_space[0] and y == to_space[1]
 
 class ValAction(object):
 	def __init__(self, action , move_value):
@@ -29,7 +33,7 @@ class Board(object):
 	def __init__(self, player1, player2, scores_matrix, pos_matrix, free_list):
 		self.player1 = player1
 		self.player2 = player2
-		self.free_list = free_list
+		self.free_list = list(free_list)
 		self.scores_matrix = list(scores_matrix)
 		self.pos_matrix = list(pos_matrix)
 		self.edge = len(scores_matrix)
@@ -47,7 +51,7 @@ class Player(object):
 		self.score = 0
 		self.color = color
 		self.type = player_type
-		self.positions = PriorityQueue()
+		self.positions = list()
 
 	def __str__(self):
 		 return "Player: \n" \
@@ -69,14 +73,88 @@ class Board_space(object):
 		return outputStr
 
 	def __lt__(self, other):
-		return self.value > other.value
+		return self.value < other.value
+
+	def __eq__(self, other):
+		if(type(other) is Board_space):
+			x = other.x
+			y = other.y
+		elif(type(other) is Action):
+			if(type(other.to_space) is Board_space):
+				x = other.to_space.x
+				y = other.to_space.y
+			else:
+				x = other.to_space[0]
+				y = other.to_space[1]
+		else:
+			x = other.x
+			y = other.y
+		return self.x == x and self.y == y
 
 def apply_action(board, action):
 	if(board.turn == 1): board.turn =2
 	else: board.turn = 1
 
+def out_of_bounds(space, board):
+	x = space[0]
+	y = space[1]
+	if (x < 0 or x >= board.edge or y < 0 or y >= board.edge):
+		return True
+	else:
+		return False
+
+def get_adjacent(space, board):
+	space_list = list()
+	potential = list()
+	if(space is Board_space):
+		x = space.x
+		y = space.y
+	else:
+		x = space[0]
+		y = space[1]
+	potential.append((x, y + 1))
+	potential.append((x, y - 1))
+	potential.append((x + 1, y))
+	potential.append((x - 1, y))
+	for space in potential:
+		if(out_of_bounds(space, board) == False):
+			space_list.append(space)
+
+
+
+
+
 def get_all_actions(board):
-	pass
+	enemy = None
+	player = None
+	if(board.turn == 1):
+		enemy = board.player2
+		player = board.player1
+	else:
+		enemy = board.player1
+		player = board.player2
+	action_list = list()
+	adjacent_list = list()
+	
+	for space in player.positions:
+		neighbor_list = get_adjacent(space, board)
+		for neighbor in neighbor_list:
+			if neighbor not in adjacent_list and neighbor in board.free_list:
+				adjacent_list.append(neighbor)
+	for space in adjacent_list:
+		neighbor_list = get_neighbors(space, board)
+		for neighbor in neighbor_list:
+			if neighbor in enemy.positions:
+				combined_value = board.scores_matrix[neighbor[1]][neighbor[0]] + board.scores_matrix[space[1]][space[0]]
+				curr_action = Action(True, space, combined_value)
+				action_list.append(curr_action)
+	for space in board.free_list:
+		if space not in action_list:
+			action_list.append(Action(False, space, board.scores_matrix[space.y][space.x]))
+	return action_list
+
+
+	
 
 def alpha_beta_search(board):
 	deep_copy_board = copy.deepcopy(board)
@@ -97,7 +175,7 @@ def setup(p1, p2, filename):
 	string_matrix[:] = []
 	scores_matrix = list()
 	scores_matrix[:] = []
-	free_list = PriorityQueue()
+	free_list = list()
 	#this reads the file
 	if(filename == None):
 		raise Exception("No board provided!!!")
@@ -118,7 +196,7 @@ def setup(p1, p2, filename):
 	for y in range(len(scores_matrix)):
 		for x in range(len(scores_matrix[y])):
 			space = Board_space(x, y, scores_matrix[y][x], None)
-			free_list.put(space)
+			free_list.append(space)
 	
 	pos_matrix = list()
 	for y in range(len(scores_matrix)):
@@ -132,6 +210,9 @@ def setup(p1, p2, filename):
 
 def solutionGenerator(board):
 	print(board)
+	actions = get_all_actions(board)
+	for action in actions:
+		print(action.to_space)
 
 
 
