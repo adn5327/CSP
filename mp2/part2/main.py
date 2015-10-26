@@ -99,6 +99,41 @@ def solutionGenerator(board):
 	pass
 
 
+def all():
+	print('Running Keren')
+	all_for_one_board('game_boards/Keren.txt')
+	print('Running Narvik')
+	all_for_one_board('game_boards/Narvik.txt')
+	print('Running Sevastopol')
+	all_for_one_board('game_boards/Sevastopol.txt')
+	print('Running Smolensk')
+	all_for_one_board('game_boards/Smolensk.txt')
+	print('Running Westerplatte')
+	all_for_one_board('game_boards/Westerplatte.txt')
+
+def all_for_one_board(filename):
+	print('minimax vs minimax')
+	player1 = Player("blue", "minimax")
+	player2 = Player("green", "minimax")
+	solveProblem(player1, player2, filename)
+
+
+	print('alphabeta vs alphabeta')
+	player1 = Player("blue", "alphabeta")
+	player2 = Player("green", "alphabeta")
+	solveProblem(player1, player2, filename)
+
+	print('minimax vs alphabeta, minimax goes first')
+	player1 = Player("blue", "minimax")
+	player2 = Player("green", "alphabeta")
+	solveProblem(player1, player2, filename)
+
+	print('alphabeta vs minimax, alphabeta goes first')
+	player1 = Player("blue", "alphabeta")
+	player2 = Player("green", "minimax")
+	solveProblem(player1, player2, filename)
+
+
 def solveProblem(p1, p2, filename):
 	board = setup(p1, p2, filename)
 	solutionGenerator(board)
