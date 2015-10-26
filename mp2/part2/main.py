@@ -10,8 +10,16 @@ depth_alphabeta = 4
 
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
 
+class Action(object):
+	def __init__(self, from_space, to_space, value):
+		self.from_space = from_space
+		self.to_space = to_space
+		self.value = value
+		# this would be value of the action
+
+
 class ValAction(object):
-	def __init__(action , move_value):
+	def __init__(self, action , move_value):
 		self.action = action
 		self.move_value = move_value
 	def __str__(self):
@@ -25,6 +33,7 @@ class Board(object):
 		self.scores_matrix = list(scores_matrix)
 		self.pos_matrix = list(pos_matrix)
 		self.edge = len(scores_matrix)
+		self.turn = 1
 
 	def __str__(self):
 		outputStr = ""
@@ -62,11 +71,18 @@ class Board_space(object):
 	def __lt__(self, other):
 		return self.value > other.value
 
+def apply_action(board, action):
+	if(board.turn == 1): board.turn =2
+	else: board.turn = 1
+
 def get_all_actions(board):
 	pass
 
 def alpha_beta_search(board):
-	max_obj(board, -maxint -1, maxint)
+	deep_copy_board = copy.deepcopy(board)
+	
+	max_obj(deep_copy_board, -maxint -1, maxint)
+
 	return max_obj.action
 
 def max_obj(board, lower, upper):
