@@ -72,9 +72,9 @@ def get_all_actions(board):
 
 def minimax(board):
 	potential_actions = get_all_actions(board)
-	if not potential_actions: 
-		# should this really return this???
-		return cur_utility(board)
+	# if not potential_actions: 
+	# 	# should this really return this???
+	# 	return cur_utility(board)
 
 	max_action = potential_actions[0]
 
@@ -117,9 +117,9 @@ def alpha_beta_search(board):
 
 	#search through get all actions and find action with val closest to potential_val
 	potential_actions = get_all_actions(board)
-	if not potential_actions:
-		#what should this actually return here???
-		return cur_utility(board)
+	# if not potential_actions:
+	# 	#what should this actually return here???
+	# 	return cur_utility(board)
 
 	# cloest_action = potential_actions[0]
 
