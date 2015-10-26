@@ -18,10 +18,10 @@ class ValAction(object):
 		return "Action: {} has Value: {}".format(self.action, self.move_value)
 
 class Board(object):
-	def __init__(self, player1, player2, scores_matrix, pos_matrix):
+	def __init__(self, player1, player2, scores_matrix, pos_matrix, free_list):
 		self.player1 = player1
 		self.player2 = player2
-		self.free_list = PriorityQueue()
+		self.free_list = free_list
 		self.scores_matrix = list(scores_matrix)
 		self.pos_matrix = list(pos_matrix)
 		self.edge = len(scores_matrix)
@@ -53,6 +53,11 @@ class Board_space(object):
 		self.y = y
 		self.value = value
 		self.owner = owner
+
+	def __str__(self):
+		pair = (self.x, self.y)
+		outputStr = str(pair) + " Value = " + str(self.value) + " Owner = " + str(self.owner)
+		return outputStr
 
 	def __lt__(self, other):
 		return self.value > other.value
@@ -106,13 +111,12 @@ def setup(p1, p2, filename):
 			pos_matrix[y].append(0)
 
 	board_file.close()
-	return Board(p1, p2, scores_matrix, pos_matrix)
-	# for line in board_file:
-	# 	print line.split('\t')
+	return Board(p1, p2, scores_matrix, pos_matrix, free_list)
+
 
 def solutionGenerator(board):
 	print(board)
-	pass
+
 
 
 def all():
