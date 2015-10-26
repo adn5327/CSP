@@ -20,7 +20,11 @@ otherplayer = 'green'
 
 def main():
 	all()
-
+	# global turn
+	# global mode
+	# turn = 1
+	# mode = [0,0]
+	# start('Keren')
 def all():
 	all_one('Keren')
 	all_one('Narvik')
@@ -34,27 +38,29 @@ def all_one(boardy):
 
 	turn = 1
 	mode =[1,1]
-	start(boardy)
+
 	print boardy
 	print ('minimax vs minimax\n')
+	start(boardy)
 
 	turn = 1
 	mode =[2,2]
-	start(boardy)
+
 	print boardy
 	print ('alpha-beta vs alpha-beta\n')
+	start(boardy)
 
 	turn = 1
 	mode =[1,2]
-	start(boardy)
 	print boardy
 	print ('minimax vs alpha-beta -- minimax goes first\n')
+	start(boardy)
 
 	turn = 1
 	mode =[2,1]
-	start(boardy)
 	print boardy
 	print ('alpha-beta vs minimax -- alpha-beta goes first\n')
+	start(boardy)
 
 
 def start(boardy):
@@ -73,13 +79,31 @@ def start(boardy):
 	otherplayer = 'blue'
 	setup_p1()
 
+def formatted_print(boardy):
+	for i in range(len(currentBoard)):
+		string = ''
+		otherstring = ''
+		for j in range(len(currentBoard[i])):
+			if currentBoard[i][j] == 1: string += 'B\t'
+			elif currentBoard[i][j] == 2: string += 'G\t'
+			else: string += 'N\t'
+			otherstring += str(scores[i][j])
+			otherstring += '\t'
+		print '{}\t\t\t\t\t{}'.format(string, otherstring)
+
 def playgame(turny):
 	global currentBoard
 	temp = None
 	if(mode[2-turny] == 2):
 		temp = alphabeta(currentBoard, scores, turny, 0, 1, 3-turn, minint, maxint)
-	else:
+	elif(mode[2-turny] == 1):
 		temp = minimax(currentBoard, scores, turny, 0 , 1, 3-turn)
+	elif(mode[2-turny] == 0):
+		formatted_print(currentBoard)
+		#they will externally think that it is X, but internally it is Y -- they are flipped
+		y = int(input('Enter X Coordinate >>: '))
+		x = int(input('Enter Y Coordinate >>: '))
+		temp = (0,x,y)
 
 	movetoi = temp[1]
 	movetoj = temp[2]
@@ -229,15 +253,7 @@ def print_winner():
 	print "Blue Average Nodes/Move:\t{}\tGreen Average Nodes/Move:\t{}".format(nodesExpanded[0]/total_moves[0], nodesExpanded[1]/total_moves[1])
 	print "Blue Average Time/Move:\t{}\tGreen Average Time/Move:\t{}".format(total_time[0]/total_moves[0], total_time[0]/total_moves[0])
 	global currentBoard
-	for i in range(len(currentBoard)):
-		string = ''
-		otherstring = ''
-		for j in range(len(currentBoard[i])):
-			if currentBoard[i][j] == 1: string += 'B\t'
-			else: string += 'G\t'
-			otherstring += str(scores[i][j])
-			otherstring += '\t'
-		print '{}\t\t\t\t\t{}'.format(string, otherstring)
+	formatted_print(currentBoard)
 	
 	print('\n\n')
 
