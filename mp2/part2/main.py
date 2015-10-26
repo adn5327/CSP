@@ -6,8 +6,8 @@ from Queue import PriorityQueue
 import copy
 maxint = 10000000
 
-depth_minimax = 3
-depth_alphabeta = 4
+depth_minimax = 1
+depth_alphabeta = 2
 
 
 __author__ = 'Jakub Klapacz <jklapac2@illinois.edu> and Abhishek Nigam <adnigam2@illinois.edu>'
@@ -31,14 +31,14 @@ class Action(object):
 		return x == to_space[0] and y == to_space[1]
 
 class Board(object):
-	def __init__(self, player1, player2, scores_matrix, pos_matrix, free_list):
+	def __init__(self, player1, player2, scores_matrix, pos_matrix, free_list, turnval):
 		self.player1 = player1
 		self.player2 = player2
 		self.free_list = list(free_list)
 		self.scores_matrix = list(scores_matrix)
 		self.pos_matrix = list(pos_matrix)
 		self.edge = len(scores_matrix)
-		self.turn = 1
+		self.turn = turnval
 
 	def __str__(self):
 		outputStr = ""
@@ -49,15 +49,20 @@ class Board(object):
 		return outputStr
 
 	def custom_copy(self):
-		player1 = Player(self.player1.color, self.player1.type, (self.player1.positions))
-		player2 = Player(self.player2.color, self.player2.type, (self.player2.positions))
+		player1 = Player(self.player1.color, self.player1.type, copy.deepcopy(self.player1.positions), self.player1.score)
+		player2 = Player(self.player2.color, self.player2.type, copy.deepcopy(self.player2.positions), self.player2.score)
+		free_copy = list()
+		for space in self.free_list:
+			free_copy.append(Board_space(space.x, space.y, space.value, None))
 		free_copy = list(self.free_list)
-		score_copy = list(self.scores_matrix)
-		pos_copy = list(self.pos_matrix)
-		return Board(player1, player2, score_copy, pos_copy, free_copy)
+		score_copy = copy.deepcopy(self.scores_matrix)
+		pos_copy = copy.deepcopy(self.pos_matrix)
+		return Board(player1, player2, score_copy, pos_copy, free_copy, self.turn)
+
 class Player(object):
-	def __init__(self, color, player_type, positions):
+	def __init__(self, color, player_type, positions, score):
 		self.score = 0
+		self.score += score
 		self.color = color
 		self.type = player_type
 		self.positions = list(positions)
@@ -105,6 +110,8 @@ class Board_space(object):
 def apply_action(board, action):
 	player = None
 	playerid = 0
+	if(action == None):
+		return board
 	if(board.turn == 1): 
 		board.turn = 2
 		player = board.player1
@@ -117,6 +124,8 @@ def apply_action(board, action):
 		enemy = board.player1
 	if(not board.free_list):
 		return board
+	
+		
 	i = board.free_list.index(action)
 	space = board.free_list.pop(i)
 	space.owner = player
@@ -191,11 +200,11 @@ def get_all_actions(board):
 		for neighbor in neighbor_list:
 			if neighbor in enemy.positions:
 				combined_value = board.scores_matrix[neighbor[1]][neighbor[0]] + board.scores_matrix[space[1]][space[0]]
-				curr_action = Action(True, space, combined_value)
+				curr_action = Action(True, space, combined_value + player.score)
 				action_list.append(curr_action)
 	for space in board.free_list:
 		if space not in action_list:
-			action_list.append(Action(False, space, board.scores_matrix[space.y][space.x]))
+			action_list.append(Action(False, space, board.scores_matrix[space.y][space.x] + player.score))
 	return action_list
 
 
@@ -208,11 +217,10 @@ def minimax(board):
 	# 	return cur_utility(board)
 
 	max_action = potential_actions[0]
-
 	for each_action in potential_actions:
 		# applier_board = copy.deepcopy(board)
 		applier_board = board.custom_copy()
-		apply_action(applier_board, each_action)
+		applier_board = apply_action(applier_board, each_action)
 		if minimax_min(applier_board, 0) > max_action.value:
 			max_action = each_action
 
@@ -226,7 +234,7 @@ def minimax_max(board, depth):
 	for each_action in potential_actions:
 		# applier_board = copy.deepcopy(board)
 		applier_board = board.custom_copy()
-		apply_action(applier_board, each_action)
+		applier_board = apply_action(applier_board, each_action)
 		v = max(v, minimax_min(applier_board, depth+1))
 	return v
 
@@ -238,8 +246,9 @@ def minimax_min(board, depth):
 	for each_action in potential_actions:
 		# applier_board = copy.deepcopy(board)
 		applier_board = board.custom_copy()
-		apply_action(applier_board, each_action)
+		applier_board = apply_action(applier_board, each_action)
 		v = min(v, minimax_max(applier_board, depth+1))
+	
 	return v
 
 
@@ -256,12 +265,15 @@ def alpha_beta_search(board):
 	# 	return cur_utility(board)
 
 	# cloest_action = potential_actions[0]
-
+	print("Potential value = " + str(potential_val))
 	for each_action in potential_actions:
+		print(each_action.value)
+
 		if(each_action.value == potential_val):
 			return each_action
 
 	#should never reach this
+	# print(potential_val)
 	return None
 
 def max_value(board, alpha, beta, depth):
@@ -273,7 +285,9 @@ def max_value(board, alpha, beta, depth):
 	for each_action in potential_actions:
 		# applier_board = copy.deepcopy(board)
 		applier_board = board.custom_copy()
-		apply_action(applier_board, each_action)
+		applier_board = apply_action(applier_board, each_action)
+		# print(applier_board)
+
 		v = max(v, min_value(applier_board, alpha, beta, depth+1))
 		if v >= beta: return v
 		alpha = max(alpha, v)
@@ -289,7 +303,7 @@ def min_value(board, alpha, beta, depth):
 	for each_action in potential_actions:
 		# applier_board = copy.deepcopy(board)
 		applier_board = board.custom_copy()
-		apply_action(applier_board, each_action)
+		applier_board = apply_action(applier_board, each_action)
 		v = min(v, max_value(applier_board, alpha, beta, depth+1))
 		if v <= alpha: return v
 		beta = min(beta, v)
@@ -300,18 +314,31 @@ def min_value(board, alpha, beta, depth):
 	
 
 def cur_utility(board):
-	pass
+	
+	if board.turn == 1:
+		# return board.player1.score - board.player2.score
+	
+	
+	# 	print("Player 1 utility = " + str(board.player1.score))
+		return board.player1.score
+	else:
+	# 	print("Player 1 utility = " + str(board.player1.score))
+	# 	print("Player 2 utility = " + str(board.player2.score))
+		return board.player2.score
+
 
 
 def terminal_state_mm(board, depth):
-	if(depth > depth_minimax): return True
+	if(depth > depth_minimax): 
+		return True
 	potential_actions = get_all_actions(board)
 	if not potential_actions:
 		return True
 	return False
 
 def terminal_state_ab(board, depth):
-	if(depth > depth_alphabeta): return True
+	if(depth > depth_alphabeta): 
+		return True
 	potential_actions = get_all_actions(board)
 	if not potential_actions:
 		return True
@@ -337,16 +364,17 @@ def take_action(board):
 		else:
 			action = get_human_action(board)
 			return
-
-	apply_action(board, action)
+	
+	board = apply_action(board, action)
+	print(board)
 	
 	
 
 def get_human_action():
-	print(board)
+	# print(board)
 	x = int(input('Enter the X coordinate of your action:'))
 	y = int(input('Enter the Y coordinate of your action:'))
-	apply_action(board, (x,y))
+	board =	apply_action(board, (x,y))
 	# implement the rest here
 
 
@@ -389,21 +417,22 @@ def setup(p1, p2, filename):
 			pos_matrix[y].append(0)
 
 	board_file.close()
-	return Board(p1, p2, scores_matrix, pos_matrix, free_list)
+	return Board(p1, p2, scores_matrix, pos_matrix, free_list, 1)
 
 
 def solutionGenerator(board):
-	print(board)
+	# print(board)
 	play(board)
-	print(board)
+	# print(board)
 
 
 def play(board):
 	potential_actions = get_all_actions(board)
 	if not potential_actions: return
-	take_action(board)
-	play(board)
 	print(board)
+	take_action(board)
+	
+	play(board)
 	return
 
 
@@ -421,24 +450,24 @@ def all():
 
 def all_for_one_board(filename):
 	print('minimax vs minimax')
-	player1 = Player("blue", "minimax")
-	player2 = Player("green", "minimax")
+	player1 = Player("blue", "minimax", [], 0)
+	player2 = Player("green", "minimax", [], 0)
 	solveProblem(player1, player2, filename)
 
 
 	print('alphabeta vs alphabeta')
-	player1 = Player("blue", "alphabeta")
-	player2 = Player("green", "alphabeta")
+	player1 = Player("blue", "alphabeta", [], 0)
+	player2 = Player("green", "alphabeta", [], 0)
 	solveProblem(player1, player2, filename)
 
 	print('minimax vs alphabeta, minimax goes first')
-	player1 = Player("blue", "minimax")
-	player2 = Player("green", "alphabeta")
+	player1 = Player("blue", "minimax", [], 0)
+	player2 = Player("green", "alphabeta", [], 0)
 	solveProblem(player1, player2, filename)
 
 	print('alphabeta vs minimax, alphabeta goes first')
-	player1 = Player("blue", "alphabeta")
-	player2 = Player("green", "minimax")
+	player1 = Player("blue", "alphabeta", [], 0)
+	player2 = Player("green", "minimax", [], 0)
 	solveProblem(player1, player2, filename)
 
 
@@ -452,20 +481,20 @@ def main():
 
 	if(len(argv) != 5):
 		print("Running all game boards with default conditions")
-		player1 = Player("blue", "alphabeta", [])
-		player2 = Player("green", "minimax", [])
+		player1 = Player("blue", "alphabeta", [], 0)
+		player2 = Player("green", "minimax", [], 0)
 	else:
-		player1 = Player(argv[1], argv[2], [])
-		player2 = Player(argv[3], argv[4], [])
+		player1 = Player(argv[1], argv[2], [], 0)
+		player2 = Player(argv[3], argv[4], [], 0)
 
-	if(argv[2] == 'all'):
+	if(len(argv) >= 2 and argv[2] == 'all'):
 		all()
 		return
 	
 	print("Player 1 goes first.")
-	solveProblem(player1, player2, 'game_boards/Keren.txt')
+	# solveProblem(player1, player2, 'game_boards/Keren.txt')
 	
-	# solveProblem('game_boards/Narvik.txt')
+	solveProblem(player1, player2, 'game_boards/Narvik.txt')
 	# solveProblem('game_boards/Sevastopol.txt')
 	# solveProblem('game_boards/Smolensk.txt')
 	# solveProblem('game_boards/Westerplatte.txt')
