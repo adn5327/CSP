@@ -81,13 +81,41 @@ class Board_space(object):
 				x = other.to_space[0]
 				y = other.to_space[1]
 		else:
-			x = other.x
-			y = other.y
+			x = other[0]
+			y = other[1]
 		return self.x == x and self.y == y
 
 def apply_action(board, action):
-	if(board.turn == 1): board.turn =2
-	else: board.turn = 1
+	player = None
+	if(board.turn == 1): 
+		board.turn = 2
+		player = board.player1
+		enemy = board.player2
+	else: 
+		board.turn = 1
+		player = board.player2
+		enemy = board.player1
+	
+	i = board.free_list.index(action)
+	space = board.free_list.pop(i)
+	space.owner = player
+	player.score += space.value
+	player.positions.append(space)
+	adjacent_list = get_adjacent(space, board)
+	adj_to_player = False
+	for neighbor in adjacent_list:
+		if neighbor in player.positions:
+			adj_to_player = True
+	if adj_to_player:
+		for neighbor in adjacent_list:
+			if neighbor in enemy.positions:
+				i = enemy.positions.index(neighbor)
+				enemy_space = enemy.positions.pop(i)
+				enemy_space.owner = player
+				enemy.score -= enemy_space.value
+				player.score += enemy_space.value
+				player.positions.append(enemy_space)
+	return board
 
 def out_of_bounds(space, board):
 	x = space[0]
@@ -100,7 +128,7 @@ def out_of_bounds(space, board):
 def get_adjacent(space, board):
 	space_list = list()
 	potential = list()
-	if(space is Board_space):
+	if(type(space) is Board_space):
 		x = space.x
 		y = space.y
 	else:
@@ -113,7 +141,7 @@ def get_adjacent(space, board):
 	for space in potential:
 		if(out_of_bounds(space, board) == False):
 			space_list.append(space)
-
+	return space_list
 
 
 
@@ -136,7 +164,7 @@ def get_all_actions(board):
 			if neighbor not in adjacent_list and neighbor in board.free_list:
 				adjacent_list.append(neighbor)
 	for space in adjacent_list:
-		neighbor_list = get_neighbors(space, board)
+		neighbor_list = get_adjacent(space, board)
 		for neighbor in neighbor_list:
 			if neighbor in enemy.positions:
 				combined_value = board.scores_matrix[neighbor[1]][neighbor[0]] + board.scores_matrix[space[1]][space[0]]
@@ -384,6 +412,8 @@ def all_for_one_board(filename):
 def solveProblem(p1, p2, filename):
 	board = setup(p1, p2, filename)
 	solutionGenerator(board)
+
+
 
 def main():
 
