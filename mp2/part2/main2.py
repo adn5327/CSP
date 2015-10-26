@@ -1,12 +1,12 @@
 import time
-
+from sys import stdout
 currentBoard = None #will be a list initialized
 scores = None # will be a list initialized
 nodesExpanded = [0,0] #initialize this list to be zero for both players at start
 mode = [1,1] #1 for minimax, 2 for alphabeta
 total_time = [0,0]
 total_moves = [0,0]
-
+f = None
 max_depthab = 4
 max_depthmm = 3
 
@@ -18,8 +18,45 @@ turn = 1
 curplayer = 'blue'
 otherplayer = 'green'
 
+style = """<style type='text/css'>
+html{
+	font-family: Courier;
+}
+r {
+	color: #ff0000;
+}
+g {
+	color: #00ff00;
+}
+b {
+	color: #0000ff;
+}
+blck{
+	color: #000000;
+}
+</style>"""
+
+RED = 'r'
+GREEN = 'g'
+BLUE = 'b'
+BLACK = 'blck'
+def write_html(type, str_):
+	return str(('<%(type)s>%(str)s</%(type)s>' % {
+		'type': type, 'str': str_ } ))
+
+class bcolors:
+	BLUE = '\033[94m'
+	GREEN = '\033[92m'
+	ENDC = '\033[0m'
+
 def main():
+	global f
+	# f = open('out.html', 'w')
+	stdout.write('<html>')
+	stdout.write(style)
 	all()
+	stdout.write('</html>')
+	# close()
 	# global turn
 	# global mode
 	# turn = 1
@@ -27,10 +64,10 @@ def main():
 	# start('Keren')
 def all():
 	all_one('Keren')
-	all_one('Narvik')
-	all_one('Sevastopol')
-	all_one('Smolensk')
-	all_one('Westerplatte')
+	# all_one('Narvik')
+	# all_one('Sevastopol')
+	# all_one('Smolensk')
+	# all_one('Westerplatte')
 
 def all_one(boardy):
 	global turn
@@ -40,26 +77,26 @@ def all_one(boardy):
 	mode =[1,1]
 
 	print boardy
-	print ('minimax vs minimax\n')
+	print ('minimax vs minimax<br/>')
 	start(boardy)
 
 	turn = 1
 	mode =[2,2]
 
 	print boardy
-	print ('alpha-beta vs alpha-beta\n')
+	print ('alpha-beta vs alpha-beta<br/>')
 	start(boardy)
 
 	turn = 1
 	mode =[1,2]
 	print boardy
-	print ('minimax vs alpha-beta -- minimax goes first\n')
+	print ('minimax vs alpha-beta -- minimax goes first<br/>')
 	start(boardy)
 
 	turn = 1
 	mode =[2,1]
 	print boardy
-	print ('alpha-beta vs minimax -- alpha-beta goes first\n')
+	print ('alpha-beta vs minimax -- alpha-beta goes first<br/>')
 	start(boardy)
 
 
@@ -80,16 +117,22 @@ def start(boardy):
 	setup_p1()
 
 def formatted_print(boardy):
+
 	for i in range(len(currentBoard)):
 		string = ''
 		otherstring = ''
+		
+		
+		
 		for j in range(len(currentBoard[i])):
-			if currentBoard[i][j] == 1: string += 'B\t'
-			elif currentBoard[i][j] == 2: string += 'G\t'
-			else: string += 'N\t'
-			otherstring += str(scores[i][j])
-			otherstring += '\t'
-		print '{}\t\t\t\t\t{}'.format(string, otherstring)
+			if currentBoard[i][j] == 1: string += write_html(BLUE, 'B&nbsp;&nbsp;&nbsp;&nbsp')
+			elif currentBoard[i][j] == 2: string += write_html(GREEN, 'G&nbsp;&nbsp;&nbsp;&nbsp')
+			else: string += write_html(BLACK, 'N&nbsp;&nbsp;&nbsp;&nbsp')
+			otherstring += write_html(BLACK, str(scores[i][j]))
+			otherstring += write_html(BLACK, '&nbsp;&nbsp;&nbsp;&nbsp')
+		stdout.write('{}&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp{}<br /><br/>'.format(string, otherstring))
+
+
 
 def playgame(turny):
 	global currentBoard
@@ -242,20 +285,22 @@ def print_winner():
 	p2 = score_calc(2)
 
 	if p1 > p2:
-		print 'Blue wins'
+		print 'Blue wins<br />'
 	elif p2 > p1:
-		print 'Green wins'
+		print 'Green wins<br />'
 	else:
-		print 'Tie game'
+		print 'Tie game<br />'
 
-	print "Blue score:\t\t\t{}\tGreen score:\t{}".format(p1,p2)
-	print "Blue moves:\t\t\t{}\tGreen moves:\t{}".format(total_moves[0], total_moves[1])
-	print "Blue Average Nodes/Move:\t{}\tGreen Average Nodes/Move:\t{}".format(nodesExpanded[0]/total_moves[0], nodesExpanded[1]/total_moves[1])
-	print "Blue Average Time/Move:\t{}\tGreen Average Time/Move:\t{}".format(total_time[0]/total_moves[0], total_time[0]/total_moves[0])
+	# print "Blue score:\t\t\t{}\tGreen score:\t{}".format(p1,p2)
+	print "Blue score:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{}&nbsp;&nbsp;&nbsp;&nbsp;Green score:&nbsp;&nbsp;&nbsp;&nbsp;{}<br/>".format(p1,p2)
+	# print "Blue moves:\t\t\t{}\tGreen moves:\t{}".format(total_moves[0], total_moves[1])
+	print "Blue moves:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{}&nbsp;&nbsp;&nbsp;&nbsp;Green moves:&nbsp;&nbsp;&nbsp;&nbsp;{}<br/>".format(total_moves[0], total_moves[1])
+	print "Blue Average Nodes/Move:&nbsp;&nbsp;&nbsp;&nbsp{}&nbsp;&nbsp;&nbsp;&nbspGreen Average Nodes/Move:&nbsp;&nbsp;&nbsp;&nbsp{}<br/>".format(nodesExpanded[0]/total_moves[0], nodesExpanded[1]/total_moves[1])
+	print "Blue Average Time/Move:&nbsp;&nbsp;&nbsp;&nbsp{}&nbsp;&nbsp;&nbsp;&nbspGreen Average Time/Move:&nbsp;&nbsp;&nbsp;&nbsp{}<br/><br />".format(total_time[0]/total_moves[0], total_time[0]/total_moves[0])
 	global currentBoard
 	formatted_print(currentBoard)
 	
-	print('\n\n')
+	print('<br/><br/>')
 
 	return
 
