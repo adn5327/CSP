@@ -270,6 +270,7 @@ def take_action(board):
 			action = minimax(board)
 		else:
 			action = get_human_action(board)
+			return
 	else:
 		if(board.player2.type == 'alphabeta'):
 			action = alpha_beta_search(board)
@@ -277,12 +278,15 @@ def take_action(board):
 			action = minimax(board)
 		else:
 			action = get_human_action(board)
+			return
 
 	apply_action(board, action)
 
 def get_human_action():
 	print(board)
-	print('Usage: Ending X, Ending Y, Starting X, Starting Y')
+	x = int(input('Enter the X coordinate of your action:'))
+	y = int(input('Enter the Y coordinate of your action:'))
+	apply_action(board, (x,y))
 	# implement the rest here
 
 
@@ -391,6 +395,9 @@ def main():
 		player1 = Player(argv[1], argv[2])
 		player2 = Player(argv[3], argv[4])
 
+	if(argv[2] == 'all'):
+		all()
+		return
 	
 	print("Player 1 goes first.")
 	solveProblem(player1, player2, 'game_boards/Keren.txt')
