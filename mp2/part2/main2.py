@@ -1,4 +1,5 @@
 import time
+from sys import argv
 
 currentBoard = None #will be a list initialized
 scores = None # will be a list initialized
@@ -19,7 +20,11 @@ curplayer = 'blue'
 otherplayer = 'green'
 
 def main():
-	all()
+	if(len(argv) > 1):
+		ec()
+	else:
+		all()
+
 	# global turn
 	# global mode
 	# turn = 1
@@ -31,6 +36,12 @@ def all():
 	all_one('Sevastopol')
 	all_one('Smolensk')
 	all_one('Westerplatte')
+
+def ec():
+	all_one('KerenLarge')
+	all_one('NarvikLarge')
+	all_one('WesterplatteLarge')
+	all_one('Random')
 
 def all_one(boardy):
 	global turn
